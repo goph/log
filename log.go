@@ -5,14 +5,26 @@ type Context map[string]interface{}
 
 // StructuredLogger allows to attach context to a logger.
 type StructuredLogger interface {
+	// WithField allows to add a key-value pair to the logger as context.
+	//
+	// It returns a new instance in order to avoid modifing the parent context.
 	WithField(key string, value interface{}) StructuredLogger
+
+	// WithFields allows to add a set of key-value pairs to the logger as context.
+	//
+	// It returns a new instance in order to avoid modifing the parent context.
 	WithFields(fields map[string]interface{}) StructuredLogger
 }
 
 // LevelLogger attaches a level to the log.
 type LevelLogger interface {
+	// Debug logs on Debug level.
 	Debug(args ...interface{})
+
+	// Info logs on Info level.
 	Info(args ...interface{})
+
+	// Error logs on Error level.
 	Error(args ...interface{})
 }
 
