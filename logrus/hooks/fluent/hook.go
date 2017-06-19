@@ -26,7 +26,7 @@ type Hook struct {
 }
 
 // Levels reutrns a list of levels to fire this hook for.
-func (h *Hook) Levels(entry *logrus.Entry) []logrus.Level {
+func (h *Hook) Levels() []logrus.Level {
 	return levels
 }
 
