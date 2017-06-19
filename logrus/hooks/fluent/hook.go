@@ -8,16 +8,28 @@ import (
 const (
 	tagField     = "tag"
 	messageField = "message"
+	levels       = []logrus.Level{
+		logrus.PanicLevel,
+		logrus.FatalLevel,
+		logrus.ErrorLevel,
+		logrus.WarnLevel,
+		logrus.InfoLevel,
+	}
 )
 
 // Hook implements a Logrus hook for Fluent.
 type Hook struct {
-	Fluent     fluent.Fluent
+	Fluent     *fluent.Fluent
 	Tag        string
 	DefaultTag string
 }
 
-// Fire is invoked by logrus and sends logs to Fluentd.
+// Levels reutrns a list of levels to fire this hook for.
+func (h *Hook) Levels(entry *logrus.Entry) []logrus.Level {
+	return levels
+}
+
+// Fire is invoked by logrus and sends logs to Fluent.
 func (h *Hook) Fire(entry *logrus.Entry) error {
 	tag := h.getTag(entry)
 
