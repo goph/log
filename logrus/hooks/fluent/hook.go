@@ -8,14 +8,15 @@ import (
 const (
 	tagField     = "tag"
 	messageField = "message"
-	levels       = []logrus.Level{
-		logrus.PanicLevel,
-		logrus.FatalLevel,
-		logrus.ErrorLevel,
-		logrus.WarnLevel,
-		logrus.InfoLevel,
-	}
 )
+
+var levels = []logrus.Level{
+	logrus.PanicLevel,
+	logrus.FatalLevel,
+	logrus.ErrorLevel,
+	logrus.WarnLevel,
+	logrus.InfoLevel,
+}
 
 // Hook implements a Logrus hook for Fluent.
 type Hook struct {
