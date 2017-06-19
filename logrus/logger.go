@@ -1,40 +1,73 @@
 package logrus
 
-import (
-	"github.com/goph/log"
-	"github.com/sirupsen/logrus"
-)
+import "github.com/sirupsen/logrus"
 
 // Logger is a wrapper around Logrus.
 type Logger struct {
 	Logger logrus.FieldLogger
 }
 
-// WithField allows to add a key-value pair to the logger as context.
-//
-// It returns a new instance in order to avoid modifing the parent context.
-func (l *Logger) WithField(key string, value interface{}) log.StructuredLogger {
-	return &Logger{l.Logger.WithField(key, value)}
-}
-
-// WithFields allows to add a set of key-value pairs to the logger as context.
-//
-// It returns a new instance in order to avoid modifing the parent context.
-func (l *Logger) WithFields(fields map[string]interface{}) log.StructuredLogger {
-	return &Logger{l.Logger.WithFields(logrus.Fields(fields))}
+// NewLogger returns a new Logger.
+func NewLogger() *Logger {
+	return &Logger{logrus.New()}
 }
 
 // Debug logs on Debug level.
 func (l *Logger) Debug(args ...interface{}) {
-	l.Logger.Debug(args...)
+	msg, ctx := parseLog(args...)
+
+	lo := l.Logger
+
+	if len(ctx) > 0 {
+		lo = lo.WithFields(ctx)
+	}
+
+	lo.Debug(msg)
 }
 
 // Info logs on Info level.
 func (l *Logger) Info(args ...interface{}) {
-	l.Logger.Info(args...)
+	msg, ctx := parseLog(args...)
+
+	lo := l.Logger
+
+	if len(ctx) > 0 {
+		lo = lo.WithFields(ctx)
+	}
+
+	lo.Info(msg)
 }
 
 // Error logs on Error level.
 func (l *Logger) Error(args ...interface{}) {
-	l.Logger.Error(args...)
+	msg, ctx := parseLog(args...)
+
+	lo := l.Logger
+
+	if len(ctx) > 0 {
+		lo = lo.WithFields(ctx)
+	}
+
+	lo.Error(msg)
+}
+
+func parseLog(args ...interface{}) (string, map[string]interface{}) {
+	var msg string
+	var ctx map[string]interface{}
+
+	if len(args) <= 2 {
+		for _, value := range args {
+			if value, ok := value.(string); ok {
+				msg = value
+				continue
+			}
+
+			if value, ok := value.(map[string]interface{}); ok {
+				ctx = value
+				continue
+			}
+		}
+	}
+
+	return msg, ctx
 }
