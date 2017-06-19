@@ -49,8 +49,9 @@ func (h *Hook) getTag(entry *logrus.Entry) string {
 		return h.Tag
 	}
 
-	if tag, ok := entry.Data[tagField]; ok {
+	if tag, ok := entry.Data[tagField].(string); ok {
 		delete(entry.Data, tagField)
+
 		return tag
 	}
 
