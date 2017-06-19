@@ -6,7 +6,6 @@ import (
 )
 
 const (
-	defaultTag   = "fluent"
 	tagField     = "tag"
 	messageField = "message"
 )
@@ -16,14 +15,6 @@ type Hook struct {
 	Fluent     fluent.Fluent
 	Tag        string
 	DefaultTag string
-}
-
-// NewHook returns a new Hook.
-func NewHook() *Hook {
-	return &Hook{
-		Fluent:     fluent.New(fluent.Config{}),
-		DefaultTag: defaultTag,
-	}
 }
 
 // Fire is invoked by logrus and sends logs to Fluentd.
