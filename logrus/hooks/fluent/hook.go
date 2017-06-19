@@ -34,7 +34,12 @@ func (h *Hook) Levels() []logrus.Level {
 func (h *Hook) Fire(entry *logrus.Entry) error {
 	tag := h.getTag(entry)
 
-	data := entry.Data
+	data := make(map[string]interface{})
+
+	// Loop through entry data to avoid modifications.
+	for k, v := range entry.Data {
+		data[k] = v
+	}
 
 	if _, ok := data[messageField]; !ok {
 		data[messageField] = entry.Message
