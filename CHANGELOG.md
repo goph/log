@@ -1,6 +1,13 @@
 # Change Log
 
 
+## Unreleased
+
+### Removed
+
+- Logrus hooks
+
+
 ## 0.1.1 - 2017-06-19
 
 ### Added
