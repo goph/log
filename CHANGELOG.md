@@ -1,6 +1,13 @@
 # Change Log
 
 
+## 0.3.0 - 2017-06-24
+
+### Removed
+
+- Logger interface
+
+
 ## 0.2.0 - 2017-06-24
 
 ### Changed
