@@ -1,6 +1,10 @@
 package logrus
 
-import "github.com/sirupsen/logrus"
+import (
+	"fmt"
+
+	"github.com/sirupsen/logrus"
+)
 
 const (
 	levelField = "level"
@@ -42,7 +46,12 @@ func (l *Logger) Log(keyvals ...interface{}) error {
 			msg = keyvals[i+1].(string)
 
 		case levelField:
-			level = keyvals[i+1].(string)
+			if s, ok := keyvals[i+1].(fmt.Stringer); ok {
+				level = s.String()
+
+			} else {
+				level = keyvals[i+1].(string)
+			}
 
 		default:
 			ctx[keyvals[i].(string)] = keyvals[i+1]

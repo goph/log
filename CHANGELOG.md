@@ -1,6 +1,13 @@
 # Change Log
 
 
+## 0.3.1 - 2017-06-24
+
+### Fixed
+
+- Logger level detection
+
+
 ## 0.3.0 - 2017-06-24
 
 ### Removed
