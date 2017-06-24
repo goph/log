@@ -2,7 +2,3 @@ package: github.com/goph/log
 import:
 - package: github.com/sirupsen/logrus
   version: ^1.0.0
-- package: github.com/fluent/fluent-logger-golang
-  version: ^1.2.1
-  subpackages:
-  - fluent
