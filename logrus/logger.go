@@ -2,6 +2,15 @@ package logrus
 
 import "github.com/sirupsen/logrus"
 
+const (
+	levelField = "level"
+	msgField   = "msg"
+
+	debugLevel = "debug"
+	infoLevel  = "info"
+	errorLevel = "error"
+)
+
 // Logger is a wrapper around Logrus.
 type Logger struct {
 	Logger logrus.FieldLogger
@@ -12,62 +21,47 @@ func NewLogger() *Logger {
 	return &Logger{logrus.New()}
 }
 
-// Debug logs on Debug level.
-func (l *Logger) Debug(args ...interface{}) {
-	msg, ctx := parseLog(args...)
+// Log implements the logger interface.
+func (l *Logger) Log(keyvals ...interface{}) error {
+	kvlen := len(keyvals)
 
-	lo := l.Logger
-
-	if len(ctx) > 0 {
-		lo = lo.WithFields(ctx)
+	if kvlen%2 != 0 {
+		keyvals = append(keyvals, "(MISSING)")
+		kvlen++
 	}
 
-	lo.Debug(msg)
-}
-
-// Info logs on Info level.
-func (l *Logger) Info(args ...interface{}) {
-	msg, ctx := parseLog(args...)
-
-	lo := l.Logger
-
-	if len(ctx) > 0 {
-		lo = lo.WithFields(ctx)
-	}
-
-	lo.Info(msg)
-}
-
-// Error logs on Error level.
-func (l *Logger) Error(args ...interface{}) {
-	msg, ctx := parseLog(args...)
-
-	lo := l.Logger
-
-	if len(ctx) > 0 {
-		lo = lo.WithFields(ctx)
-	}
-
-	lo.Error(msg)
-}
-
-func parseLog(args ...interface{}) (string, map[string]interface{}) {
+	// TODO: default level?
+	level := "info"
 	var msg string
-	var ctx map[string]interface{}
+	ctx := map[string]interface{}{}
 
-	if len(args) <= 2 {
-		for _, value := range args {
-			if value, ok := value.(string); ok {
-				msg = value
-				continue
-			}
+	// Note: unsafe string assertion
+	for i := 0; i < kvlen-1; i += 2 {
+		switch keyvals[i] {
+		case msgField:
+			msg = keyvals[i+1].(string)
 
-			if value, ok := value.(map[string]interface{}); ok {
-				ctx = value
-				continue
-			}
+		case levelField:
+			level = keyvals[i+1].(string)
+
+		default:
+			ctx[keyvals[i].(string)] = keyvals[i+1]
 		}
 	}
 
-	return msg, ctx
+	lo := l.Logger.WithFields(ctx)
+
+	switch level {
+	case debugLevel:
+		lo.Debug(msg)
+
+	default:
+	case infoLevel:
+		lo.Info(msg)
+
+	case errorLevel:
+		lo.Error(msg)
+	}
+
+	return nil
 }

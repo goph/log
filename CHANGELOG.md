@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Use go-kit's logger interface
+
 ### Removed
 
 - Logrus hooks
